@@ -1,12 +1,20 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { LucideArrowUpRight, LucideX } from "lucide-react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 export function NewNoteCard() {
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true);
 
-  function handleStartEditor() {
+  function handleShowEditor() {
     setShouldShowOnboarding(false);
+  }
+
+  function handleContentChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    var c = event.target.value;
+
+    if (!c) {
+      handleShowEditor();
+    }
   }
 
   return (
@@ -27,8 +35,11 @@ export function NewNoteCard() {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 w-full" />
 
-        <Dialog.Content className="z-0 fixed top-1/2 left-1/2 bg-slate-700 text-left h-[60vh] max-w-[640px] w-full -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col justify-between gap-5">
-          <Dialog.Close className="absolute right-0 top-0 p-[6px] bg-slate-800 rounded-tr-md text-slate-500 leading-3 hover:text-slate-300 active:text-slate-600 group transition-all outline-none focus-visible:ring-1 focus-visible:ring-lime-400 ">
+        <Dialog.Content className="z-0 outline-none fixed top-1/2 left-1/2 bg-slate-700 text-left h-[60vh] max-w-[640px] w-full -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col justify-between gap-5">
+          <Dialog.Close
+            onClick={() => setShouldShowOnboarding(true)}
+            className="absolute right-0 top-0 p-[6px] bg-slate-800 rounded-tr-md text-slate-500 leading-3 hover:text-slate-300 active:text-slate-600 group transition-all outline-none focus-visible:ring-1 focus-visible:ring-lime-400 "
+          >
             <LucideX className="group-active:scale-90" />
           </Dialog.Close>
 
@@ -37,20 +48,28 @@ export function NewNoteCard() {
               Adicionar nota
             </span>
 
-            <p className="text-sm leading-6 ">
-              Comece{" "}
-              <button className="text-lime-400 hover:underline">
-                gravando uma nota
-              </button>{" "}
-              em áudio ou se preferir{" "}
-              <button
-                onClick={handleStartEditor}
-                className="text-lime-400 hover:underline"
-              >
-                utilize apenas texto
-              </button>
-              .
-            </p>
+            {shouldShowOnboarding ? (
+              <p className="text-sm leading-6 ">
+                Comece{" "}
+                <button className="text-lime-400 hover:underline">
+                  gravando uma nota
+                </button>{" "}
+                em áudio ou se preferir{" "}
+                <button
+                  onClick={handleShowEditor}
+                  className="text-lime-400 hover:underline"
+                >
+                  utilize apenas texto
+                </button>
+                .
+              </p>
+            ) : (
+              <textarea
+                placeholder="Escreva sua nota aqui..."
+                className=" bg-slate-700 w-full text-slate-200 outline-none text-sm resize-none"
+                onChange={handleContentChange}
+              />
+            )}
           </div>
 
           <button className="bg-lime-400 w-full p-4 text-lime-800 font-semibold rounded-b-md">
