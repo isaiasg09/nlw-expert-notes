@@ -22,14 +22,7 @@ export function App() {
         <NoteCard
           note={{
             date: new Date(),
-            content: "nota 1 onduoasdhasodhasuiod hasoud has",
-          }}
-        />
-        <NoteCard
-          note={{
-            date: new Date(),
-            content:
-              "nota 2 jkl2389123890127893172893782917389127832783283728 1jkasy d89fashjida dyh 8921",
+            content: "Hello World! This is a note card.",
           }}
         />
       </div>
