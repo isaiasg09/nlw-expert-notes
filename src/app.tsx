@@ -11,13 +11,6 @@ interface Note {
 
 export function App() {
   const [search, setSearch] = useState("");
-  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    const text = event.target.value;
-
-    setSearch(text);
-
-    console.log(text);
-  }
 
   // try to get notes from local storage or create an empty array
   const [notes, setNotes] = useState<Note[]>(
@@ -53,6 +46,21 @@ export function App() {
     localStorage.setItem("notes", JSON.stringify(notesArray));
   }
 
+  // get input text and update 'search' state
+  function handleSearch(event: ChangeEvent<HTMLInputElement>) {
+    const query = event.target.value;
+
+    setSearch(query);
+  }
+
+  // create new array with the notes that the content includes the search query, otherwise the array is defined to all notes
+  const filteredNotes =
+    search !== ""
+      ? notes.filter((note) =>
+          note.content.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+        )
+      : notes;
+
   return (
     <div className="mx-auto max-w-6xl my-16 space-y-6">
       <img src={logo} alt="logo nlw expert" />
@@ -62,7 +70,7 @@ export function App() {
           type="text"
           placeholder="Busque em suas notas"
           className="w-full bg-transparent tracking-tight text-3xl font-semibold placeholder:text-slate-500 outline-none"
-          onChange={handleInputChange}
+          onChange={handleSearch}
         />
       </form>
 
@@ -70,7 +78,8 @@ export function App() {
       <div className="grid grid-cols-3 auto-rows-[250px] gap-6">
         <NewNoteCard onNoteCreated={onNoteCreated} />
 
-        {notes && notes.map((note) => <NoteCard key={note.id} note={note} />)}
+        {notes &&
+          filteredNotes.map((note) => <NoteCard key={note.id} note={note} />)}
       </div>
     </div>
   );
