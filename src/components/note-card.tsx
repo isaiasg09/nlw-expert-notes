@@ -5,13 +5,14 @@ import { LucideX } from "lucide-react";
 
 interface NoteCardProps {
   note: {
-    id: number;
+    id: string;
     date: Date;
     content: string;
   };
 }
 
 export function NoteCard({ note }: NoteCardProps) {
+  // format date to "time ago" format
   const noteDateFormatted = formatDistanceToNow(note.date, {
     locale: ptBR,
     addSuffix: true,

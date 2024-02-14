@@ -3,25 +3,24 @@ import { LucideArrowUpRight, LucideX } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "sonner";
 
-interface NoteCardProps {
-  note: {
-    id: string;
-    date: Date;
-    content: string;
-  };
+interface NewNoteCardProps {
+  onNoteCreated: (content: string) => void;
 }
 
-export function NewNoteCard() {
+export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true);
   const [noteContent, setNoteContent] = useState("");
 
+  // show textarea 
   function handleShowEditor() {
     setShouldShowOnboarding(false);
   }
 
+  // Handle textarea change, update note content
   function handleContentChange(event: ChangeEvent<HTMLTextAreaElement>) {
     var text = event.target.value;
 
+    // if text is empty, show editor
     if (!text) {
       handleShowEditor();
     }
@@ -30,12 +29,17 @@ export function NewNoteCard() {
   }
 
   function handleSaveNote(event: FormEvent<HTMLFormElement>) {
+    // prevent page from reloading
     event.preventDefault();
-    console.log(noteContent);
+
+    // Call parent function to create a note
+    onNoteCreated(noteContent);
 
     // Close dialog
     setShouldShowOnboarding(true);
+    setNoteContent("");
 
+    // toast success
     toast.success("Nota criada com sucesso!");
   }
 
@@ -91,6 +95,8 @@ export function NewNoteCard() {
                   placeholder="Escreva sua nota aqui..."
                   className=" bg-slate-700 text-slate-200 outline-none text-sm resize-none h-full"
                   onChange={handleContentChange}
+                  value={noteContent}
+                  autoFocus
                 />
               )}
             </div>
