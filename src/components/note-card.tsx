@@ -5,6 +5,7 @@ import { LucideX } from "lucide-react";
 
 interface NoteCardProps {
   note: {
+    id: number;
     date: Date;
     content: string;
   };

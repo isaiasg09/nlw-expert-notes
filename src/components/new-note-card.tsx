@@ -1,28 +1,50 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { LucideArrowUpRight, LucideX } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { toast } from "sonner";
+
+interface NoteCardProps {
+  note: {
+    id: string;
+    date: Date;
+    content: string;
+  };
+}
 
 export function NewNoteCard() {
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true);
+  const [noteContent, setNoteContent] = useState("");
 
   function handleShowEditor() {
     setShouldShowOnboarding(false);
   }
 
   function handleContentChange(event: ChangeEvent<HTMLTextAreaElement>) {
-    var c = event.target.value;
+    var text = event.target.value;
 
-    if (!c) {
+    if (!text) {
       handleShowEditor();
     }
+
+    setNoteContent(text);
+  }
+
+  function handleSaveNote(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    console.log(noteContent);
+
+    // Close dialog
+    setShouldShowOnboarding(true);
+
+    toast.success("Nota criada com sucesso!");
   }
 
   return (
     <Dialog.Root>
       <Dialog.Trigger className="relative bg-slate-700 flex flex-col text-start rounded-md p-5 text-sm gap-3 outline-none hover:ring-1 hover:ring-slate-600 focus-visible:ring-1 focus-visible:ring-lime-400 active:brightness-75 active:translate-y-0.5 transition-all group">
-        <button className="absolute right-0 top-0 p-[6px] bg-slate-800 rounded-tr-md text-slate-500 leading-3 group-hover:text-slate-300 active:text-slate-600 group transition-all outline-none focus-visible:ring-1 focus-visible:ring-lime-400 ">
+        <div className="absolute right-0 top-0 p-[6px] bg-slate-800 rounded-tr-md text-slate-500 leading-3 group-hover:text-slate-300 active:text-slate-600 group transition-all outline-none focus-visible:ring-1 focus-visible:ring-lime-400 cursor-pointer">
           <LucideArrowUpRight className="group-active:scale-90" />
-        </button>
+        </div>
 
         <span className="font-medium text-slate-200">Adicionar Nota</span>
 
@@ -43,38 +65,43 @@ export function NewNoteCard() {
             <LucideX className="group-active:scale-90" />
           </Dialog.Close>
 
-          <div className="flex flex-1 flex-col gap-5 p-5">
-            <span className="text-sm font-medium text-slate-200">
-              Adicionar nota
-            </span>
+          <form onSubmit={handleSaveNote} className="flex-1 flex flex-col">
+            <div className="flex flex-1 flex-col gap-5 p-5">
+              <span className="text-sm font-medium text-slate-200">
+                Adicionar nota
+              </span>
 
-            {shouldShowOnboarding ? (
-              <p className="text-sm leading-6 ">
-                Comece{" "}
-                <button className="text-lime-400 hover:underline">
-                  gravando uma nota
-                </button>{" "}
-                em áudio ou se preferir{" "}
-                <button
-                  onClick={handleShowEditor}
-                  className="text-lime-400 hover:underline"
-                >
-                  utilize apenas texto
-                </button>
-                .
-              </p>
-            ) : (
-              <textarea
-                placeholder="Escreva sua nota aqui..."
-                className=" bg-slate-700 w-full text-slate-200 outline-none text-sm resize-none"
-                onChange={handleContentChange}
-              />
-            )}
-          </div>
+              {shouldShowOnboarding ? (
+                <p className="text-sm leading-6 ">
+                  Comece{" "}
+                  <button className="text-lime-400 hover:underline">
+                    gravando uma nota
+                  </button>{" "}
+                  em áudio ou se preferir{" "}
+                  <button
+                    onClick={handleShowEditor}
+                    className="text-lime-400 hover:underline"
+                  >
+                    utilize apenas texto
+                  </button>
+                  .
+                </p>
+              ) : (
+                <textarea
+                  placeholder="Escreva sua nota aqui..."
+                  className=" bg-slate-700 text-slate-200 outline-none text-sm resize-none h-full"
+                  onChange={handleContentChange}
+                />
+              )}
+            </div>
 
-          <button className="bg-lime-400 w-full p-4 text-lime-800 font-semibold rounded-b-md">
-            Salvar nota
-          </button>
+            <button
+              type="submit"
+              className="bg-lime-400 w-full p-4 text-lime-800 font-semibold rounded-b-md"
+            >
+              Salvar nota
+            </button>
+          </form>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

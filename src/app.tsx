@@ -1,8 +1,17 @@
+import { useState } from "react";
 import logo from "./assets/logo-nlw-expert.svg";
 import { NewNoteCard } from "./components/new-note-card";
 import { NoteCard } from "./components/note-card";
 
 export function App() {
+  const [notes, setNotes] = useState([
+    {
+      id: 1,
+      date: new Date(),
+      content: "Ola Mundo",
+    },
+  ]);
+
   return (
     <div className="mx-auto max-w-6xl my-16 space-y-6">
       <img src={logo} alt="logo nlw expert" />
@@ -19,12 +28,7 @@ export function App() {
       <div className="grid grid-cols-3 auto-rows-[250px] gap-6">
         <NewNoteCard />
 
-        <NoteCard
-          note={{
-            date: new Date(),
-            content: "Hello World! This is a note card.",
-          }}
-        />
+        {notes && notes.map((note) => <NoteCard key={note.id} note={note} />)}
       </div>
     </div>
   );
