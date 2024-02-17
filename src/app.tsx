@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from "react";
 import logo from "./assets/logo-nlw-expert.svg";
 import { NewNoteCard } from "./components/new-note-card";
 import { NoteCard } from "./components/note-card";
+import { toast } from "sonner";
 
 interface Note {
   id: string;
@@ -46,6 +47,26 @@ export function App() {
     localStorage.setItem("notes", JSON.stringify(notesArray));
   }
 
+  function onNoteDeleted(id: string) {
+    // const newNote = {
+    //   id: crypto.randomUUID(),
+    //   date: new Date(),
+    //   content,
+    // };
+
+    // remove the note to the list of notes
+    const newNotes = notes.filter((note) => {
+      return note.id != id;
+    });
+
+    setNotes(newNotes);
+
+    // save new array to local storage
+    localStorage.setItem("notes", JSON.stringify(newNotes));
+
+    toast.success("Nota deletada com sucesso!");
+  }
+
   // get input text and update 'search' state
   function handleSearch(event: ChangeEvent<HTMLInputElement>) {
     const query = event.target.value;
@@ -62,7 +83,7 @@ export function App() {
       : notes;
 
   return (
-    <div className="mx-auto max-w-6xl my-16 space-y-6">
+    <div className="mx-auto max-w-6xl my-16 space-y-6 px-5 ">
       <img src={logo} alt="logo nlw expert" />
 
       <form className="w-full">
@@ -75,11 +96,13 @@ export function App() {
       </form>
 
       <div className="h-px bg-slate-700" />
-      <div className="grid grid-cols-3 auto-rows-[250px] gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[250px] gap-6">
         <NewNoteCard onNoteCreated={onNoteCreated} />
 
         {notes &&
-          filteredNotes.map((note) => <NoteCard key={note.id} note={note} />)}
+          filteredNotes.map((note) => (
+            <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted} />
+          ))}
       </div>
     </div>
   );

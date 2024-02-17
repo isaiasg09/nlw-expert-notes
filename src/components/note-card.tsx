@@ -9,9 +9,10 @@ interface NoteCardProps {
     date: Date;
     content: string;
   };
+  onNoteDeleted: (id: string) => void;
 }
 
-export function NoteCard({ note }: NoteCardProps) {
+export function NoteCard({ note, onNoteDeleted }: NoteCardProps) {
   // format date to "time ago" format
   const noteDateFormatted = formatDistanceToNow(note.date, {
     locale: ptBR,
@@ -31,8 +32,8 @@ export function NoteCard({ note }: NoteCardProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 w-full" />
 
-        <Dialog.Content className="z-0 fixed top-1/2 left-1/2 bg-slate-700 text-left h-[60vh] max-w-[640px] w-full -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col justify-between gap-5">
-          <Dialog.Close className="absolute right-0 top-0 p-[6px] bg-slate-800 rounded-tr-md text-slate-500 leading-3 hover:text-slate-300 active:text-slate-600 group transition-all outline-none focus-visible:ring-1 focus-visible:ring-lime-400 ">
+        <Dialog.Content className="z-0 fixed inset-0 md:inset-auto md:top-1/2 md:left-1/2 bg-slate-700 text-left md:h-[60vh] md:max-w-[640px] w-full md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-md flex flex-col justify-between gap-5">
+          <Dialog.Close className="absolute right-0 top-0 p-[6px] bg-slate-800 md:rounded-tr-md text-slate-500 leading-3 hover:text-slate-300 active:text-slate-600 group transition-all outline-none focus-visible:ring-1 focus-visible:ring-lime-400 ">
             <LucideX className="group-active:scale-90" />
           </Dialog.Close>
 
@@ -47,6 +48,7 @@ export function NoteCard({ note }: NoteCardProps) {
           <button
             type="button"
             className="bg-slate-800 w-full p-4 rounded-b-md text-sm text-slate-300 outline-none focus-visible:ring-1 focus-visible:ring-lime-400 font-medium group "
+            onClick={() => onNoteDeleted(note.id)}
           >
             Deseja{" "}
             <span className="text-red-400 group-hover:underline">
